@@ -381,10 +381,20 @@ function getYoutubeEmbedUrl(url) {
   return match ? `https://www.youtube.com/embed/${match[1]}` : '';
 }
 
+function formatDuration(seconds) {
+  if (seconds == null || Number.isNaN(Number(seconds))) return '—';
+  const total = Math.max(0, Math.floor(Number(seconds)));
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return m > 0 ? `${m}m ${s}s` : `${s}s`;
+}
+
 const VideoCard = memo(function VideoCard({ video }) {
   const isYoutube = video?.is_youtube;
   const embed = isYoutube ? getYoutubeEmbedUrl(video?.url) : null;
   const platformName = isYoutube ? 'YouTube' : 'Instagram Reel';
+  const audienceLabel = isYoutube ? 'subscribers' : 'followers';
+  const hashtags = video?.hashtags?.slice(0, 5) ?? [];
 
   return (
     <div className="flex flex-col rounded-lg border border-neutral-800 bg-neutral-900/80 overflow-hidden h-full">
@@ -417,11 +427,41 @@ const VideoCard = memo(function VideoCard({ video }) {
         )}
       </div>
       <div className="p-3 flex flex-col gap-2 min-h-0 flex-1 text-sm">
-        <p className="font-medium text-neutral-100 line-clamp-2 leading-snug">
-          {video?.title || 'Untitled'}
-        </p>
-        <p className="text-neutral-500 text-xs truncate">{video?.creator}</p>
-        <div className="grid grid-cols-3 gap-1.5 text-center text-xs mt-auto">
+        <div className="flex items-start justify-between gap-2">
+          <p className="font-medium text-neutral-100 line-clamp-2 leading-snug flex-1">
+            {video?.title || 'Untitled'}
+          </p>
+          <span className="shrink-0 text-[10px] uppercase tracking-wide text-neutral-500 border border-neutral-800 rounded px-1.5 py-0.5">
+            {platformName}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 min-w-0">
+          <p className="text-neutral-400 text-xs truncate">{video?.creator || 'Creator'}</p>
+          {video?.follower_count != null && (
+            <>
+              <span className="text-neutral-700">·</span>
+              <p className="text-neutral-500 text-xs tabular-nums shrink-0">
+                {(video.follower_count ?? 0).toLocaleString()} {audienceLabel}
+              </p>
+            </>
+          )}
+        </div>
+
+        <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-neutral-500">
+          <span>
+            <span className="text-neutral-600">Duration </span>
+            <span className="text-neutral-300 tabular-nums">{formatDuration(video?.duration)}</span>
+          </span>
+          {video?.upload_date && (
+            <span>
+              <span className="text-neutral-600">Uploaded </span>
+              <span className="text-neutral-300">{video.upload_date}</span>
+            </span>
+          )}
+        </div>
+
+        <div className="grid grid-cols-3 gap-1.5 text-center text-xs">
           <div className="rounded bg-neutral-950 py-1.5 border border-neutral-800">
             <div className="text-neutral-500">Views</div>
             <div className="text-neutral-200 font-medium tabular-nums">
@@ -441,6 +481,19 @@ const VideoCard = memo(function VideoCard({ video }) {
             </div>
           </div>
         </div>
+
+        {hashtags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-auto pt-1">
+            {hashtags.map((tag, idx) => (
+              <span
+                key={`${tag}-${idx}`}
+                className="text-[10px] text-neutral-400 bg-neutral-950 border border-neutral-800 rounded px-1.5 py-0.5 font-mono"
+              >
+                {tag.startsWith('#') ? tag : `#${tag}`}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
