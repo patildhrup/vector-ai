@@ -1,4 +1,4 @@
-# Vector
+# Vector AI
 
 Vector is a social video comparison platform that uses retrieval-augmented generation (RAG) to compare two videos from YouTube or Instagram Reel.
 
@@ -96,4 +96,7 @@ It extracts video metadata, transcribes spoken content, embeds transcript segmen
 4. Ask follow-up questions in the chat interface.
 5. The application responds with AI-backed analysis and cites video sources.
 
+```
+### Thanks for comming ☺️
 
+```
