@@ -96,7 +96,4 @@ It extracts video metadata, transcribes spoken content, embeds transcript segmen
 4. Ask follow-up questions in the chat interface.
 5. The application responds with AI-backed analysis and cites video sources.
 
-```
-### Thanks for comming ☺️
-
-```
+### Thanks for coming ☺️
