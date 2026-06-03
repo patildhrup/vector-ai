@@ -1,3 +1,20 @@
-envVars:
-  - key: PYTHON_VERSION
-    value: 3.11.9
+services:
+  - type: web_service
+    name: vector-backend
+    env: python
+    plan: starter
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_API_BASE
+        sync: false
+      - key: OPENAI_API_TYPE
+        sync: false
+      - key: OPENAI_API_VERSION
+        sync: false
+      - key: OPENAI_DEPLOYMENT_ID
+        sync: false
